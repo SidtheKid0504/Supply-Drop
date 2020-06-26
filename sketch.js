@@ -1,7 +1,5 @@
 var helicopterIMG, helicopterSprite, packageSprite,packageIMG;
-var packageBody,ground, groundIMG, backgroundIMG; 
-var Ground2, GrIMG;
-
+var packageBody,ground
 const Engine = Matter.Engine;
 const World = Matter.World;
 const Bodies = Matter.Bodies;
@@ -9,20 +7,14 @@ const Body = Matter.Body;
 
 function preload()
 {
-	helicopterIMG=loadImage("sprites/helicopter.png")
-	packageIMG=loadImage("sprites/package.png")
-
-    backgroundIMG = loadImage("sprites/bg.jpg")
-    GrIMG = loadImage("sprites/ground.png")
+	helicopterIMG=loadImage("helicopter.png")
+	packageIMG=loadImage("package.png")
 }
 
 function setup() {
 	createCanvas(800, 700);
 	rectMode(CENTER);
 	
-	Ground2 = createSprite(width/2, 745, width, 20);
-	Ground2.addImage(GrIMG)
-	Ground2.scale= 0.5;
 
 	packageSprite=createSprite(width/2, 80, 10,10);
 	packageSprite.addImage(packageIMG)
@@ -32,19 +24,19 @@ function setup() {
 	helicopterSprite.addImage(helicopterIMG)
 	helicopterSprite.scale=0.6
 
-	/*groundSprite=createSprite(width/2, height-35, width,10);
-	groundSprite.shapeColor=color(255)*/
+	groundSprite=createSprite(width/2, height-35, width,10);
+	groundSprite.shapeColor=color(255)
 
 
 	engine = Engine.create();
 	world = engine.world;
 
-	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:0.25, friction: 0,  isStatic:true});
+	packageBody = Bodies.circle(width/2 , 200 , 5 , {restitution:1.5, isStatic:true});
 	World.add(world, packageBody);
 	
 
 	//Create a Ground
-	ground = Bodies.rectangle(width/2, 680, width, 10 , {isStatic:true} );
+	ground = Bodies.rectangle(width/2, 650, width, 10 , {isStatic:true} );
  	World.add(world, ground);
 
 
@@ -55,9 +47,10 @@ function setup() {
 
 function draw() {
   rectMode(CENTER);
-  background(backgroundIMG);
-  packageSprite.x= packageBody.position.x 
-  packageSprite.y= packageBody.position.y 
+  background(0);
+  packageSprite.x= packageBody.position.x; 
+  packageSprite.y= packageBody.position.y;
+  noBounce();
   drawSprites();
  
 }
@@ -68,3 +61,25 @@ function keyPressed() {
     
   }
 }
+
+function isBounced(pack, floor) {
+	var packageTop = pack.y + pack.width;
+	var groundTop = floor.y;
+
+	if (packageTop >= groundTop) {
+		return 1;
+	}
+}
+
+function noBounce() {
+
+	var bounceCount = 0;
+	if (isBounced(packageSprite, Ground2)) {
+		bounceCount += 1;
+
+		if (bounceCount === 3) {
+			packageSprite.restitution = 0;
+		}
+	}
+}
+
