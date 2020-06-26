@@ -74,7 +74,7 @@ function isBounced(pack, floor) {
 function noBounce() {
 
 	var bounceCount = 0;
-	if (isBounced(packageSprite, Ground2)) {
+	if (isBounced(packageSprite, groundS)) {
 		bounceCount += 1;
 
 		if (bounceCount === 3) {
